@@ -43,34 +43,20 @@ class GameScene: SKScene, GameBoardSpriteDelegate, GameSessionDelegate {
 
     var scores = GameScore()
 
-    func setUpScene() {
-        let gameBoard = self.childNode(withName: "//board") as! GameBoardSprite
+
+    override func didMove(to view: SKView) {
+        let gameBoard = childNode(withName: "//board") as! GameBoardSprite
         gameBoard.isUserInteractionEnabled = true
         self.gameBoard = gameBoard
 
-        self.titleLabel = self.childNode(withName: "//titleLabel") as? SKLabelNode
-        self.statusLabel = self.childNode(withName: "//statusLabel") as? SKLabelNode
+        self.titleLabel = childNode(withName: "//titleLabel") as? SKLabelNode
+        self.statusLabel = childNode(withName: "//statusLabel") as? SKLabelNode
 
         let session = GameSession()
         self.session = session
         self.titleLabel.text = NSLocalizedString("Your Move", comment: "Game Title")
         updateScores()
         session.start(computerMove: false)
-    }
-
-    #if os(watchOS)
-    override func sceneDidLoad() {
-        self.setUpScene()
-    }
-    #else
-    override func didMove(to view: SKView) {
-        self.setUpScene()
-    }
-    #endif
-
-
-    override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
     }
 
     func updateScores() {
@@ -91,7 +77,6 @@ class GameScene: SKScene, GameBoardSpriteDelegate, GameSessionDelegate {
         session!.makeCurrentPlayerMove(location: pressLocation)
     }
 
-    // MARK: - GameSessionDelegate
 
     func gameSession(_ session: GameSession, player: Player, didMoveTo location: GameBoardState.Location) {
         gameBoard!.setCellAt(location: location, value: player.chip)
